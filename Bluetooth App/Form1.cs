@@ -2,17 +2,7 @@
 using InTheHand.Net.Bluetooth;
 using InTheHand.Net.Sockets;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.Win32;
-using Microsoft;
-using System.Windows;
 
 namespace Bluetooth_App
 {
@@ -20,7 +10,7 @@ namespace Bluetooth_App
     {
         public BluetoothRadio[] tabRadios;
         public BluetoothClient client;
-        public BluetoothDeviceInfo[] bluetoothDevice;
+        public BluetoothDeviceInfo[] bluetoothDeviceInfoTab;
         public BluetoothDeviceInfo choosenDevice;
         private BluetoothEndPoint localEndPoint;
         public BluetoothRadio choosenRadio = null;
@@ -65,8 +55,8 @@ namespace Bluetooth_App
                 Console.WriteLine(tabRadios[index].Name);
                 BluetoothRadio temp = tabRadios[index];
                 MessageBox.Show(
-                    "Nazwa : " + temp.Name + "\n" +
-                    "MAC : " + temp.LocalAddress + "\n");
+                    "Nazwa adaptera: " + temp.Name + "\n" +
+                    "Adres MAC: " + temp.LocalAddress + "\n");
             }
         }
 
@@ -77,8 +67,8 @@ namespace Bluetooth_App
             {
                 localEndPoint = new BluetoothEndPoint(choosenRadio.LocalAddress, BluetoothService.SerialPort);
                 client = new BluetoothClient(localEndPoint);
-                bluetoothDevice = client.DiscoverDevices(); // wyszukuje urzadzenia i zwraca nazwe oraz adres
-                foreach (var device in bluetoothDevice)
+                bluetoothDeviceInfoTab = client.DiscoverDevices(); // wyszukuje urzadzenia i zwraca nazwe oraz adres
+                foreach (var device in bluetoothDeviceInfoTab)
                 {
                     ListBoxDevices.Items.Add(device.DeviceName.ToString());
                 }
@@ -89,10 +79,10 @@ namespace Bluetooth_App
         {
             int index = ListBoxDevices.SelectedIndex;
             // jeśli tabela nie jest pusta
-            if (bluetoothDevice != null)
-                if (bluetoothDevice.Length != 0 && ListBoxDevices.SelectedIndex != -1)
-                    MessageBox.Show("Nazwa : " + bluetoothDevice[index].DeviceName.ToString() + "\n" +
-                                    "Adres: " + bluetoothDevice[index].DeviceAddress.ToString());
+            if (bluetoothDeviceInfoTab != null)
+                if (bluetoothDeviceInfoTab.Length != 0 && ListBoxDevices.SelectedIndex != -1)
+                    MessageBox.Show("Nazwa urządzenia: " + bluetoothDeviceInfoTab[index].DeviceName.ToString() + "\n" +
+                                    "Adres MAC: " + bluetoothDeviceInfoTab[index].DeviceAddress.ToString());
         }
 
         private void ButtonConnect_Click(object sender, EventArgs e)
@@ -100,7 +90,7 @@ namespace Bluetooth_App
             if (ListBoxDevices.SelectedIndex != -1)
             {
                 // jako chosenDevice przypisujemy wybrane przez nas urzadzenie z listy
-                choosenDevice = bluetoothDevice[ListBoxDevices.SelectedIndex];
+                choosenDevice = bluetoothDeviceInfoTab[ListBoxDevices.SelectedIndex];
                 // sprobuj zinicjalizowac parowanie urzadzenia
                 //metoda przyjmuje adres urzadzenia i  pin
 
